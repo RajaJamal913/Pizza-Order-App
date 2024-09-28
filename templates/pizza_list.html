@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pizza App</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .pizza-card {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            transition: 0.3s;
+        }
+        .pizza-card:hover {
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+        .pizza-image {
+            height: 200px;
+            object-fit: cover;
+        }
+        .order-btn {
+            background-color: #ff5722;
+            color: white;
+        }
+        .order-btn:hover {
+            background-color: #e64a19;
+            color: white;
+        }
+        .navbar {
+            background-color: #ff5722;
+        }
+    </style>
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark">
+    <a class="navbar-brand" href="#">Pizza App</a>
+    <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Home</a>
+            </li>
+            <!-- Removing the problematic hardcoded link -->
+            <li class="nav-item">
+                <a class="nav-link" href="{% url 'contact' %}">Contact Us</a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<div class="container my-5">
+    <h1 class="text-center mb-5">Available Pizzas</h1>
+    <div class="row">
+        {% for pizza in pizzas %}
+        <div class="col-md-4 mb-4">
+            <div class="card pizza-card">
+                <img src="{{ pizza.image_url }}" class="card-img-top pizza-image" alt="{{ pizza.name }}">
+                <div class="card-body">
+                    <h5 class="card-title">{{ pizza.name }}</h5>
+                    <p class="card-text">{{ pizza.get_pizza_type_display }} Pizza - ${{ pizza.price }}</p>
+                    <a href="{% url 'place_order' pizza.id %}" class="btn order-btn btn-block">Order Now</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <!-- Section for ongoing orders -->
+    <div class="mt-5">
+        <h2>Ongoing Orders</h2>
+        {% if ongoing_orders %}
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Customer Name</th>
+                        <th>Pizza</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in ongoing_orders %}
+                    <tr>
+                        <td>{{ order.full_name }}</td>
+                        <td>{{ order.pizza.name }}</td>
+                        <td>{{ order.get_status_display }}</td>
+                        <td><a href="{% url 'order_status' order.id %}" class="btn btn-info btn-sm">Track Order</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p>No ongoing orders at the moment.</p>
+        {% endif %}
+    </div>
+</div>
+
+<footer class="text-center py-4 bg-dark text-white">
+    <p>&copy; 2024 Pizza App. All Rights Reserved.</p>
+</footer>
+
+</body>
+</html>
